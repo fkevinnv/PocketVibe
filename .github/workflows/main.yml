@@ -10,15 +10,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    # Si tu proyecto Android está dentro de una subcarpeta, descomenta
+    # estas líneas y pon el nombre de la carpeta donde está gradlew:
+    # defaults:
+    #   run:
+    #     working-directory: ./PocketVibe
+
     steps:
     - name: Clonar repositorio
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Configurar Java JDK 17
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         distribution: 'temurin'
         java-version: '17'
+        cache: gradle
+
+    - name: Mostrar archivos (para depurar)
+      run: ls -la
 
     - name: Dar permisos de ejecución a Gradle
       run: chmod +x gradlew
