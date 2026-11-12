@@ -5,6 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -27,6 +28,13 @@ jobs:
 
     - name: Compilar APK de depuración (Debug)
       run: gradle assembleDebug --stacktrace
+
+    - name: Subir APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: PocketVibe-debug-apk
+        path: app/build/outputs/apk/debug/*.apk
+        if-no-files-found: error
 
     - name: Ejecutar pruebas unitarias
       run: gradle test --stacktrace
