@@ -1,6 +1,7 @@
 package com.pocketvibe.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -24,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -70,8 +72,11 @@ fun DashboardScreen(
             }
 
             items(recent, key = { it.id }) { tx ->
+                val visibleState = remember {
+                    MutableTransitionState(false).apply { targetState = true }
+                }
                 AnimatedVisibility(
-                    visible = true,
+                    visibleState = visibleState,
                     enter = fadeIn(tween(400)) + slideInVertically(tween(400)) { it / 2 },
                     exit = fadeOut()
                 ) {

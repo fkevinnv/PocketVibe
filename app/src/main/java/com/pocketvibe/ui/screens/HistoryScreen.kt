@@ -22,8 +22,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
-import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,6 +42,13 @@ import com.pocketvibe.vm.TransactionsViewModel
 @Composable
 fun HistoryScreen(viewModel: TransactionsViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    if (state.transactions.isEmpty()) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("Aún no hay movimientos")
+        }
+        return
+    }
 
     LazyColumn(
         contentPadding = PaddingValues(16.dp),

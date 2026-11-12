@@ -25,6 +25,10 @@ android {
     }
     kotlinOptions { jvmTarget = "17" }
 
+    packaging {
+        resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -59,6 +63,8 @@ dependencies {
     implementation("androidx.camera:camera-camera2:1.4.0")
     implementation("androidx.camera:camera-lifecycle:1.4.0")
     implementation("androidx.camera:camera-view:1.4.0")
+    // ListenableFuture (ProcessCameraProvider.getInstance(...).addListener)
+    implementation("com.google.guava:guava:33.3.1-android")
 
     // ML Kit OCR (para extraer el importe real del ticket)
     implementation("com.google.mlkit:text-recognition:16.0.1")

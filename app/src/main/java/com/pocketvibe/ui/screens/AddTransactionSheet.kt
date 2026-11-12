@@ -2,7 +2,8 @@ package com.pocketvibe.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.pocketvibe.data.local.Category
 import com.pocketvibe.data.local.TransactionType
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun AddTransactionSheet(
     type: TransactionType,
@@ -46,7 +47,11 @@ fun AddTransactionSheet(
 
     var amount by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
-    var selected by remember { mutableStateOf(categories.first()) }
+    var selected by remember(type) { mutableStateOf(categories.first()) }
+
+    // Importe válido: número > 0 (admite coma o punto decimal)
+    val parsedAmount = amount.replace(',', '.').toDoubleOrNull()
+    val canSave = parsedAmount != null && parsedAmount > 0.0
 
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(
@@ -69,17 +74,17 @@ fun AddTransactionSheet(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                categories.chunked(4).forEach { rowCats ->
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        rowCats.forEach { cat ->
-                            FilterChip(
-                                selected = selected == cat,
-                                onClick = { selected = cat },
-                                label = { Text("${cat.emoji} ${cat.label}") }
-                            )
-                        }
-                    }
+            // FlowRow: los chips saltan de línea en pantallas estrechas
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                categories.forEach { cat ->
+                    FilterChip(
+                        selected = selected == cat,
+                        onClick = { selected = cat },
+                        label = { Text("${cat.emoji} ${cat.label}") }
+                    )
                 }
             }
 
@@ -92,12 +97,8 @@ fun AddTransactionSheet(
             )
 
             Button(
-                onClick = {
-                    amount.replace(',', '.').toDoubleOrNull()?.let {
-                        onSave(it, selected, note.trim())
-                    }
-                },
-                enabled = amount.isNotBlank(),
+                onClick = { parsedAmount?.let { onSave(it, selected, note.trim()) } },
+                enabled = canSave,
                 modifier = Modifier.fillMaxWidth()
             ) { Text("Guardar") }
 

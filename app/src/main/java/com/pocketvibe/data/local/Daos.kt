@@ -22,8 +22,8 @@ interface TransactionDao {
 
     @Query(
         """SELECT
-             COALESCE(SUM(CASE WHEN type = 'INCOME' THEN amount END), 0) AS income,
-             COALESCE(SUM(CASE WHEN type = 'EXPENSE' THEN amount END), 0) AS expense
+             COALESCE(SUM(CASE WHEN type = 'INCOME' THEN ABS(amount) END), 0) AS income,
+             COALESCE(SUM(CASE WHEN type = 'EXPENSE' THEN ABS(amount) END), 0) AS expense
            FROM transactions WHERE timestamp >= :monthStart AND timestamp < :monthEnd"""
     )
     fun observeMonthlyTotals(monthStart: Long, monthEnd: Long): Flow<MonthlyTotals>

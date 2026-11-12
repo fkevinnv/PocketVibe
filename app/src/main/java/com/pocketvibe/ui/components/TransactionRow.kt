@@ -52,7 +52,7 @@ fun TransactionRow(tx: TransactionEntity) {
             )
         }
         Text(
-            text = "%+.2f €".format(tx.amount),
+            text = String.format(Locale("es", "ES"), "%+.2f €", tx.amount),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = if (tx.amount >= 0) Color(0xFF4ADE80) else Color(0xFFF87171)

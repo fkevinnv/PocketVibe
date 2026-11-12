@@ -1,7 +1,6 @@
 package com.pocketvibe.ui.components
 
 import androidx.compose.animation.core.Easing
-import androidx.compose.animation.core.OvershootInterpolator
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -38,6 +37,12 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+
+/** Equivalente en Compose de OvershootInterpolator(tension = 2f). */
+private val OvershootEasing = Easing { x ->
+    val t = x - 1f
+    t * t * (3f * t + 2f) + 1f
+}
 
 /**
  * FAB central con menú tipo "dial": el botón principal rota, las acciones
@@ -140,9 +145,7 @@ private fun DialAction(
 ) {
     val scale by animateFloatAsState(
         targetValue = if (visible) 1f else 0f,
-        animationSpec = tween(300, delayMillis = delay, easing = Easing { x ->
-            OvershootInterpolator().getInterpolation(x)
-        }),
+        animationSpec = tween(300, delayMillis = delay, easing = OvershootEasing),
         label = "dialScale"
     )
     val alpha by animateFloatAsState(

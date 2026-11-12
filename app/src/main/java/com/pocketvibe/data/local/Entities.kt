@@ -39,5 +39,6 @@ data class WishItemEntity(
     val createdAt: Long = System.currentTimeMillis()
 ) {
     val progress: Float
-        get() = (savedAmount / targetAmount).toFloat().coerceIn(0f, 1f)
+        get() = if (targetAmount <= 0.0) 0f
+            else (savedAmount / targetAmount).toFloat().coerceIn(0f, 1f)
 }
